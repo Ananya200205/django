@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Registration</title>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+$('#registrationForm').on('submit', function(event) {
+event.preventDefault();
+$.ajax({
+url: '',
+type: 'POST',
+data: $(this).serialize(),
+success: function(response) {
+$('#message').text(response.message);
+$('#registrationForm')[0].reset();
+},
+error: function(response) {
+let errors = response.responseJSON.errors;
+for (let field in errors) {
+$('#error_' + field).text(errors[field]);
+}
+},
+complete: function() {
+console.log('AJAX request completed');
+}
+});
+});
+});
+</script>
+</head>
+<body>
+<h1>Student Registration</h1>
+<div id="message"></div>
+<form id="registrationForm" method="post">
+{% csrf_token %}
+{{ form.as_p }}
+<input type="submit" value="Register">
+</form>
+<div id="errors">
+{% for field in form %}
+<div id="error_{{ field.name }}" style="color: red;"></div>
+{% endfor %}
+</div>
+</body>
+</html>
